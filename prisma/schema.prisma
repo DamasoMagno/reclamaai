@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Complaint {
+  id        String   @id @default(uuid())
+  text      String
+  location  String
+  category  String?
+  createdAt DateTime @default(now())
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Topic {
+  id           String   @id @default(uuid())
+  title        String
+  summary      String
+  complaintId  String
+  priority     Priority @default(MEDIUM)
+  suportCount  Int      @default(0)
+  rejectCount  Int      @default(0)
+  locationHint String?
+  categoryHint String?
+  createdAt    DateTime @default(now())
+}
