@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/prisma";
+// import { prisma } from "../../../lib/prisma";
 import { NextResponse } from "next/server";
 import z from "zod";
 
@@ -7,10 +7,10 @@ const topicSchema = z.object({
 });
 
 export async function POST(
-  req: Request,
-  { params }: { params: { topicId: string[] } }
+  req: Request
+  // { params }: { params: { topicId: string[] } }
 ) {
-  const topicId = params.topicId;
+  // const topicId = params.topicId;
   const body = await topicSchema.parseAsync(await req.json());
 
   return NextResponse.json({

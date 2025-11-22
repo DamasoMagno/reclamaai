@@ -1,6 +1,6 @@
-import { prisma } from "@/app/lib/prisma";
+import { prisma } from "../../lib/prisma";
 import { NextResponse } from "next/server";
-import { client } from "../../lib/open-api";
+// import { client } from "../../lib/open-api";
 import z from "zod";
 
 const complaintSchema = z.object({
@@ -12,20 +12,20 @@ const complaintSchema = z.object({
 export async function POST(req: Request) {
   const body = await complaintSchema.parseAsync(await req.json());
 
-  const completion = await client.chat.completions.create({
-    model: "gpt-4.1-mini",
-    messages: [
-      {
-        role: "system",
-        content: "Classifique o texto em categoria, intenção e gravidade.",
-      },
-      {
-        role: "user",
-        content: body.text,
-      },
-    ],
-    response_format: { type: "json_object" },
-  });
+  // const completion = await client.chat.completions.create({
+  //   model: "gpt-4.1-mini",
+  //   messages: [
+  //     {
+  //       role: "system",
+  //       content: "Classifique o texto em categoria, intenção e gravidade.",
+  //     },
+  //     {
+  //       role: "user",
+  //       content: body.text,
+  //     },
+  //   ],
+  //   response_format: { type: "json_object" },
+  // });
 
   await prisma.complaint.create({
     data: {
