@@ -7,12 +7,21 @@ datasource db {
   provider = "postgresql"
 }
 
+// Reclamação
 model Complaint {
   id        String   @id @default(uuid())
   text      String
   location  String
-  category  String?
+  topic     Topic    @relation(fields: [topicId], references: [id])
+  topicId   String
   createdAt DateTime @default(now())
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  topics    Topic[]
 }
 
 enum Priority {
@@ -21,15 +30,18 @@ enum Priority {
   HIGH
 }
 
+// Tópico relacionado à reclamação
 model Topic {
-  id           String   @id @default(uuid())
+  id           String      @id @default(uuid())
   title        String
   summary      String
-  complaintId  String
-  priority     Priority @default(MEDIUM)
-  suportCount  Int      @default(0)
-  rejectCount  Int      @default(0)
+  priority     Priority    @default(MEDIUM)
+  suportCount  Int         @default(0)
+  rejectCount  Int         @default(0)
   locationHint String?
+  category     Category    @relation(fields: [categoryId], references: [id])
+  categoryId   String
   categoryHint String?
-  createdAt    DateTime @default(now())
+  createdAt    DateTime    @default(now())
+  complaints   Complaint[]
 }
