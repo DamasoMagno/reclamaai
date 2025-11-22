@@ -12,8 +12,8 @@ model Complaint {
   id        String   @id @default(uuid())
   text      String
   location  String
-  topic     Topic    @relation(fields: [topicId], references: [id])
-  topicId   String
+  topic     Topic?   @relation(fields: [topicId], references: [id])
+  topicId   String?
   createdAt DateTime @default(now())
 }
 
