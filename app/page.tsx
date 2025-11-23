@@ -16,8 +16,8 @@ const initialFilters: TopicsFilters = {
 }
 
 const currentUser = {
-  id: "user-demo",
-  name: "Matheus Araújo",
+  id: "anon-user",
+  name: "Cidadão visitante",
 }
 
 export default function HomePage() {

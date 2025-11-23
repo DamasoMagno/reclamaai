@@ -80,17 +80,17 @@ export const topicSeed: Topic[] = [
     lastComplaintAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
     exampleComplaints: [
       {
-        author: "João P.",
+        author: "Cidadão 224",
         time: "há 2 dias",
         text: "A rua principal do Bairro Imperial está um breu total. Já liguei para a prefeitura e nada.",
       },
       {
-        author: "Maria S.",
+        author: "Cidadão 512",
         time: "há 5 dias",
         text: "Poste em frente à minha casa queimado há mais de um mês. Crianças com medo de brincar na rua.",
       },
       {
-        author: "Carlos A.",
+        author: "Cidadão 931",
         time: "há 1 semana",
         text: "Pagamos iluminação pública e seguimos no escuro. Precisamos de solução urgente.",
       },
@@ -108,13 +108,13 @@ export const topicSeed: Topic[] = [
     comments: [
       {
         id: "c1",
-        author: { id: "u1", name: "Ana Silva" },
+        author: { id: "u1", name: "Cidadão 778" },
         text: "Já fiz várias reclamações e nada de manutenção.",
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
       },
       {
         id: "c2",
-        author: { id: "org1", name: "Prefeitura de Itapipoca" },
+        author: { id: "org1", name: "Equipe da Prefeitura" },
         text: "Equipe técnica programada para inspeção em até 5 dias úteis.",
         accent: "bg-purple-500/10 text-purple-500",
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString(),
@@ -152,17 +152,17 @@ export const topicSeed: Topic[] = [
     contacts: [
       {
         title: "Secretaria de Obras",
-        lines: ["Responsável: João Dutra", "Email: obras@itapipoca.gov.br"],
+        lines: ["Responsável: Equipe técnica", "Email: obras@itapipoca.gov.br"],
       },
       {
-        title: "Vereador João Dutra",
-        lines: ["Gabinete: (88) 8765-4321", "Email: joao.dutra@camara.itapipoca.gov.br"],
+        title: "Ouvidoria Municipal",
+        lines: ["Telefone: 0800-000-0000", "Email: ouvidoria@itapipoca.gov.br"],
       },
     ],
     comments: [
       {
         id: "c3",
-        author: { id: "org2", name: "Vereador João Dutra" },
+        author: { id: "org2", name: "Canal Oficial" },
         text: "Solicitação enviada, licitação do recapeamento em análise.",
         accent: "bg-blue-500/10 text-blue-500",
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 4).toISOString(),
@@ -200,7 +200,7 @@ export const topicSeed: Topic[] = [
     contacts: [
       {
         title: "Secretaria de Transporte",
-        lines: ["Responsável: Ana Paula", "Email: transporte@itapipoca.gov.br"],
+        lines: ["Responsável: Equipe de mobilidade", "Email: transporte@itapipoca.gov.br"],
       },
     ],
     comments: [],
@@ -238,7 +238,7 @@ export const topicSeed: Topic[] = [
     socialImpact: "Médio",
     detailedDescription: [
       "As creches municipais do centro de Itapipoca operam com lotação máxima desde o início do ano letivo. Famílias aguardam mais de seis meses por vagas e precisam pagar instituições privadas ou improvisar cuidados.",
-      "A ausência de novas unidades afeta principalmente mães solo que não conseguem trabalhar durante o dia. O problema pressiona a rede de assistência social e reduz a renda média das famílias afetadas.",
+      "A ausência de novas unidades afeta principalmente responsáveis que precisam trabalhar durante o dia. O problema pressiona a rede de assistência social e reduz a renda média das famílias afetadas.",
     ],
     impactMetric: {
       label: "Famílias na fila de espera",
