@@ -31,12 +31,11 @@ export async function POST(req: Request) {
     data: {
       text: body.text,
       location: body.location,
-      category: body.category,
     },
   });
 
   return NextResponse.json({
-    message: "Hello from complaints route!",
+    message: "Complains was created",
     data: body,
   });
 }
