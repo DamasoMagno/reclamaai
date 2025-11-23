@@ -1,6 +1,5 @@
 "use client"
 
-<<<<<<< HEAD
 import * as React from "react"
 import Link from "next/link"
 import { PlusCircle } from "lucide-react"
