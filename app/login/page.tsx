@@ -12,6 +12,8 @@ export default function LoginPage() {
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
   const [city, setCity] = React.useState("")
+  const [neighborhood, setNeighborhood] = React.useState("")
+  const [stateValue, setStateValue] = React.useState("")
   const [feedback, setFeedback] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState(false)
 
@@ -23,6 +25,8 @@ export default function LoginPage() {
       setFeedback(mode === "login" ? "Acesso anônimo liberado (mock)." : "Perfil anônimo criado (mock).")
       if (mode === "register") {
         setCity("")
+        setNeighborhood("")
+        setStateValue("")
       }
       setEmail("")
       setPassword("")
@@ -84,15 +88,35 @@ export default function LoginPage() {
               </label>
 
               {mode === "register" && (
-                <label className="flex flex-col gap-2 text-sm font-semibold">
-                  Cidade
-                  <input
-                    className="h-11 rounded-lg border border-[#d6dce5] bg-white px-4 text-base text-[#111418] placeholder:text-[#90a4b7] focus-visible:ring-2 focus-visible:ring-[#1173d4] focus-visible:outline-none dark:border-[#36414a] dark:bg-[#111c2a] dark:text-[#f0f2f4]"
-                  placeholder="Ex.: Itapipoca - CE (opcional)"
-                  value={city}
-                  onChange={(event) => setCity(event.target.value)}
-                />
-                </label>
+                <>
+                  <label className="flex flex-col gap-2 text-sm font-semibold">
+                    Bairro
+                    <input
+                      className="h-11 rounded-lg border border-[#d6dce5] bg-white px-4 text-base text-[#111418] placeholder:text-[#90a4b7] focus-visible:ring-2 focus-visible:ring-[#1173d4] focus-visible:outline-none dark:border-[#36414a] dark:bg-[#111c2a] dark:text-[#f0f2f4]"
+                      placeholder="Ex.: Bairro Imperador"
+                      value={neighborhood}
+                      onChange={(event) => setNeighborhood(event.target.value)}
+                    />
+                  </label>
+                  <label className="flex flex-col gap-2 text-sm font-semibold">
+                    Cidade
+                    <input
+                      className="h-11 rounded-lg border border-[#d6dce5] bg-white px-4 text-base text-[#111418] placeholder:text-[#90a4b7] focus-visible:ring-2 focus-visible:ring-[#1173d4] focus-visible:outline-none dark:border-[#36414a] dark:bg-[#111c2a] dark:text-[#f0f2f4]"
+                      placeholder="Ex.: Itapipoca"
+                      value={city}
+                      onChange={(event) => setCity(event.target.value)}
+                    />
+                  </label>
+                  <label className="flex flex-col gap-2 text-sm font-semibold">
+                    Estado
+                    <input
+                      className="h-11 rounded-lg border border-[#d6dce5] bg-white px-4 text-base text-[#111418] placeholder:text-[#90a4b7] focus-visible:ring-2 focus-visible:ring-[#1173d4] focus-visible:outline-none dark:border-[#36414a] dark:bg-[#111c2a] dark:text-[#f0f2f4]"
+                      placeholder="UF"
+                      value={stateValue}
+                      onChange={(event) => setStateValue(event.target.value.toUpperCase().slice(0, 2))}
+                    />
+                  </label>
+                </>
               )}
 
               <label className="flex flex-col gap-2 text-sm font-semibold">
