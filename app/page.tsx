@@ -1,67 +1,182 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import * as React from "react"
+import Link from "next/link"
+import { PlusCircle } from "lucide-react"
+import { TopicsFilterBar } from "@/components/topics-filter-bar"
+import { TopicCard } from "@/components/topic-card"
+import type { Topic, TopicsFilters } from "@/lib/topics"
+import { fetchTopics, voteTopic, addComment } from "@/lib/topics-service"
+
+const initialFilters: TopicsFilters = {
+  category: "todos",
+  state: "",
+  city: "",
+  search: "",
+}
+
+const currentUser = {
+  id: "user-demo",
+  name: "Matheus Araújo",
+}
+
+export default function HomePage() {
+  const [topics, setTopics] = React.useState<Topic[]>([])
+  const [filters, setFilters] = React.useState<TopicsFilters>(initialFilters)
+  const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
+  const [userVotes, setUserVotes] = React.useState<Record<string, "support" | "reject">>({})
+  const [expandedExamples, setExpandedExamples] = React.useState<Record<string, boolean>>({})
+
+  React.useEffect(() => {
+    let isMounted = true
+    fetchTopics()
+      .then((data) => {
+        if (!isMounted) return
+        setTopics(data)
+        if (data.length) {
+          setFilters((prev) => (prev.state ? prev : { ...prev, state: data[0].location.state }))
+        }
+      })
+      .catch(() => setError("Não foi possível carregar os tópicos."))
+      .finally(() => setLoading(false))
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const categories = React.useMemo(() => Array.from(new Set(topics.map((topic) => topic.category))), [topics])
+
+  const filteredTopics = React.useMemo(() => {
+  return topics.filter((topic) => {
+    if (filters.category !== "todos" && topic.category !== filters.category) return false
+    if (filters.state && topic.location.state !== filters.state) return false
+    if (filters.city) {
+      const cityValue = (topic.location.city ?? "").toLowerCase()
+      if (!cityValue.includes(filters.city.toLowerCase())) return false
+    }
+    if (filters.search) {
+      const term = filters.search.toLowerCase()
+      const haystack = `${topic.title} ${topic.summary} ${topic.tags.join(" ")}`.toLowerCase()
+      if (!haystack.includes(term)) return false
+    }
+    return true
+  })
+  }, [topics, filters])
+
+  const handleVote = React.useCallback(
+    async (topicId: string, type: "support" | "reject") => {
+      if (userVotes[topicId]) return
+      setUserVotes((prev) => ({ ...prev, [topicId]: type }))
+      setTopics((prev) =>
+        prev.map((topic) => {
+          if (topic.id !== topicId) return topic
+          return type === "support"
+            ? { ...topic, supportCount: topic.supportCount + 1 }
+            : { ...topic, rejectCount: topic.rejectCount + 1 }
+        })
+      )
+      try {
+        await voteTopic(topicId, type)
+      } catch (err) {
+        console.error(err)
+        setError("Não foi possível registrar seu voto.")
+      }
+    },
+    [userVotes]
+  )
+
+  const handleAddComment = React.useCallback(async (topicId: string, text: string) => {
+    try {
+      const newComment = await addComment(topicId, {
+        author: { id: currentUser.id, name: currentUser.name },
+        text,
+      })
+      setTopics((prev) =>
+        prev.map((topic) => {
+          if (topic.id !== topicId) return topic
+          return { ...topic, comments: [...topic.comments, newComment] }
+        })
+      )
+    } catch (err) {
+      console.error(err)
+      setError("Não foi possível enviar o comentário.")
+    }
+  }, [])
+
+  const handleFilterChange = React.useCallback((key: keyof TopicsFilters, value: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }))
+  }, [])
+
+  const toggleExamples = (topicId: string) => {
+    setExpandedExamples((prev) => ({
+      ...prev,
+      [topicId]: !prev[topicId],
+    }))
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <Button>Get Started</Button>
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-[#f6f7f8] font-['Public Sans',_sans-serif] text-[#111418] dark:bg-[#101922] dark:text-[#f0f2f4]">
+      <div className="flex justify-center px-4 pb-16 pt-6 sm:px-8 md:px-16 lg:px-24 xl:px-40">
+        <div className="flex w-full max-w-[960px] flex-col">
+          <main className="mt-6 flex flex-col gap-6">
+            <HeroSection title={buildHeroTitle(filters)} />
+            <TopicsFilterBar filters={filters} categories={categories} onChange={handleFilterChange} />
+            {error && <p className="px-4 text-sm font-semibold text-red-600">{error}</p>}
+            {loading ? (
+              <section className="grid gap-4 p-4">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="h-48 animate-pulse rounded-xl bg-white/60 dark:bg-white/5" />
+                ))}
+              </section>
+            ) : (
+              <section className="grid grid-cols-1 gap-6 p-4">
+                {filteredTopics.map((topic) => (
+                  <TopicCard
+                    key={topic.id}
+                    topic={topic}
+                    userVote={userVotes[topic.id]}
+                    showExamples={Boolean(expandedExamples[topic.id])}
+                    onToggleExamples={toggleExamples}
+                    onVote={handleVote}
+                    onAddComment={handleAddComment}
+                    currentUserName={currentUser.name}
+                  />
+                ))}
+                {filteredTopics.length === 0 && !loading && (
+                  <div className="rounded-xl border border-dashed border-[#d5d9de] bg-white px-8 py-10 text-center text-[#617589] dark:border-[#36414a] dark:bg-[#1b2837]">
+                    Nenhum tópico encontrado para os filtros atuais.
+                  </div>
+                )}
+              </section>
+            )}
+          </main>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
     </div>
-  );
+  )
+}
+
+function buildHeroTitle(filters: TopicsFilters) {
+  if (filters.city) return `Top Problemas ${filters.city}`
+  if (filters.state) return `Top Problemas ${filters.state}`
+  return "Top Problemas Itapipoca"
+}
+
+function HeroSection({ title }: { title: string }) {
+  return (
+    <section className="flex flex-wrap items-start justify-between gap-4 p-4">
+      <div className="min-w-72 space-y-2">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#90a4b7]">Ranking Cívico</p>
+        <h1 className="text-4xl font-black tracking-[-0.033em] text-[#111418] dark:text-[#f0f2f4]">{title}</h1>
+        <p className="text-base text-[#617589] dark:text-[#90a4b7]">
+          Tópicos gerados por IA a partir de reclamações de cidadãos. Seu voto ajuda a definir prioridades.
+        </p>
+      </div>
+      <Link href="/reclamacao" className="flex items-center justify-center gap-2 rounded-lg bg-[#1173d4] px-6 py-2.5 text-base font-bold text-white hover:bg-[#0f65bb]">
+        <PlusCircle className="size-5" />
+        Nova Reclamação
+      </Link>
+    </section>
+  )
 }
