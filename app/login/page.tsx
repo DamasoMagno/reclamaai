@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "../context/auth";
-import { api } from "../services/api";
+import { useAuth } from "@/context/auth";
+import { api } from "../../services/api";
 import { redirect, useRouter } from "next/navigation";
 
 const cardClasses =

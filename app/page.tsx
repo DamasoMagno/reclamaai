@@ -6,7 +6,7 @@ import { TopicsFilterBar } from "@/components/topics-filter-bar";
 import { TopicCard } from "@/components/topic-card";
 import type { Topic, TopicsFilters } from "@/lib/topics";
 import { fetchTopics, voteTopic, addComment } from "@/lib/topics-service";
-import { api } from "./services/api";
+import { api } from "../services/api";
 import { SiteHeader } from "@/components/site-header";
 
 const initialFilters: TopicsFilters = {

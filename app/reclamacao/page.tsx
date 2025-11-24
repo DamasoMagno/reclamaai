@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Send, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { api } from "../services/api";
+import { api } from "../../services/api";
 import { useRouter } from "next/navigation";
 
 const CONTAINER = "mx-auto w-full max-w-4xl px-4";

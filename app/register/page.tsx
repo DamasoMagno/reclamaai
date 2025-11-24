@@ -2,8 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useAuth } from "../context/auth";
-import { api } from "../services/api";
+import { useAuth } from "@/context/auth";
 
 export default function Home() {
   const { loading, register } = useAuth();

@@ -1,7 +1,7 @@
 "use client";
 
 import "./globals.css";
-import { AuthProvider } from "./context/auth";
+import { AuthProvider } from "@/context/auth";
 
 export default function RootLayout({
   children,
